@@ -1,0 +1,140 @@
+
+
+
+name: Streamlined Build
+
+on:
+  workflow_dispatch:
+#  schedule:
+#    - cron: "0 0 * * *"
+
+permissions: write-all
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    name: Check New Version
+    outputs:
+      versions: ${{ steps.needs-versions.outputs.result }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get RouterOS "stable" version
+        id: get-stable
+        run: |
+          ROSVER=`curl -s https://upgrade.mikrotik.com/routeros/NEWESTa7.stable | awk 'FS=" " {print $1}'`
+          echo version=$ROSVER >> $GITHUB_OUTPUT
+          echo $ROSVER
+      - name: Get RouterOS "testing" version
+        id: get-testing
+        run: |
+          ROSVER=`curl -s https://upgrade.mikrotik.com/routeros/NEWESTa7.testing | awk 'FS=" " {print $1}'`
+          echo version=$ROSVER >> $GITHUB_OUTPUT    
+          echo $ROSVER
+      - name: Check "stable" channel is release
+        id: has-stable
+        uses: insightsengineering/release-existence-action@v1.0.0
+        with:
+          release-tag: ${{ steps.get-stable.outputs.version }}
+      - name: Check "testing" channel is release
+        id: has-testing
+        uses: insightsengineering/release-existence-action@v1.0.0
+        with:
+          release-tag: ${{ steps.get-testing.outputs.version }}
+      - name: Build Versions for Build "Matrix"
+        id: needs-versions
+        uses: actions/github-script@v6
+        with:
+          result-encoding: json
+          script: |
+            var versions = []
+            if (!${{ steps.has-stable.outputs.release-exists }}) {
+              versions.push("${{ steps.get-stable.outputs.version }}")
+            }
+            if (!${{ steps.has-testing.outputs.release-exists }}) {
+              versions.push("${{ steps.get-testing.outputs.version }}")
+            }
+            console.log(versions)
+            return versions
+      - name: Log Results
+        run: |
+          echo '${{ steps.needs-versions.outputs.result }}'
+          echo '${{ fromJSON(steps.needs-versions.outputs.result)[0] != null }}'
+  sendmail:
+    needs: check
+    permissions:
+      contents: write
+
+    name: Request GPL Source Code via Email
+
+    runs-on: ubuntu-latest
+    
+    if: ${{ fromJSON(needs.check.outputs.versions)[0] != null }}
+
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.check.outputs.versions) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo -E apt update
+          sudo -E apt -y install curl qemu-utils rsync unzip zip
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v4
+        with:
+          # Required mail server address if not connection_url:
+          server_address: smtp.gmail.com
+          # Server port, default 25:
+          server_port: 465
+          # Optional whether this connection use TLS (default is true if server_port is 465)
+          secure: true
+          # Optional (recommended) mail server username:
+          username: ${{secrets.MAIL_USERNAME}}
+          # Optional (recommended) mail server password:
+          password: ${{secrets.MAIL_PASSWORD}}
+          # Required mail subject:
+          subject: Request for open source code included in "RouterOS v7.19beta5"
+          # Required recipients' addresses:
+          to: tikoci-repos@gmail.com
+          # Required sender full name (address can be skipped):
+          from: TIKOCI GitHub Organization # <user@example.com>
+          # Optional plain body:
+          body: |
+            RouterOS v7.19beta5 was found on www.mikrotik.com, which contains the Linux kernel and other source code subject to various open-source licenses that require the code to be publicly available.
+
+            However, the GNU GPL-licensed source code cannot be found on MikroTik’s website or other online sources.  Based on information posted on forum.mikrotik.com from purported employees of Mikrotik, sources are provided based on an email request.  See https://forum.mikrotik.com/viewtopic.php?t=201561#p1036546.
+
+            Per that direction, please find this email to the GPLv2 and/or GPLv3 licensed source code included in RouterOS, along with any build instructions or other materials as required by the various licenses.   If RouterOS contains other open source code with public disclosure requirements, please consider this request to encompass those sources.
+
+            Thank you for your time and attention to this matter. 
+
+            --TIKOCI Maintainer
+          # Optional carbon copy recipients:
+          cc: tikoci-repos@gmail.com
+          # Optional unsigned/invalid certificates allowance:
+          ignore_cert: true
+          # Optional converting Markdown to HTML (set content_type to text/html too):
+          convert_markdown: false
+          # Optional priority: 'high', 'normal' (default) or 'low'
+          priority: high
+          # Optional nodemailerlog: true/false
+          nodemailerlog: true
+          # Optional nodemailerdebug: true/false if true lognodem will also be set true
+          nodemailerdebug: true
+
+      - name: Upload Firmware to release
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{matrix.version}}
+          allowUpdates: true
+          removeArtifacts: true
+          tag: ${{matrix.version}}
+          commit: main
+          token:  ${{ secrets.GITHUB_TOKEN }}
+          artifacts: ./*

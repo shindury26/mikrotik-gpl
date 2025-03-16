@@ -105,14 +105,14 @@ jobs:
           # Optional (recommended) mail server password:
           password: ${{secrets.MAIL_PASSWORD}}
           # Required mail subject:
-          subject: Request for open source code included in "RouterOS ${{ matrix.version}}"
+          subject: Request for open source code included in "RouterOS v${{ matrix.version}}"
           # Required recipients' addresses:
           to: ${{ github.event.inputs.mailto}}
           # Required sender full name (address can be skipped):
           from: TIKOCI GitHub Organization # <user@example.com>
           # Optional plain body:
           body: |
-            RouterOS v7.19beta5 was found on www.mikrotik.com, which contains the Linux kernel and other source code subject to various open-source licenses that require the code to be publicly available.
+            RouterOS v${{ matrix.version }} was found on www.mikrotik.com, which contains the Linux kernel and other source code subject to various open-source licenses that require the code to be publicly available.
 
             However, the GNU GPL-licensed source code cannot be found on MikroTik’s website or other online sources.  Based on information posted on forum.mikrotik.com from purported employees of Mikrotik, sources are provided based on an email request.  See https://forum.mikrotik.com/viewtopic.php?t=201561#p1036546.
 

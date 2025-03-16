@@ -5,6 +5,12 @@ name: Streamlined Build
 
 on:
   workflow_dispatch:
+    inputs:
+      mailto:
+        description: 'Email To'
+        required: true
+        default: "tikoci.repos@gmail.com"
+
 #  schedule:
 #    - cron: "0 0 * * *"
 
@@ -84,7 +90,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo -E apt update
-          sudo -E apt -y install curl qemu-utils rsync unzip zip
+          sudo -E apt -y install curl
       - name: Send mail
         uses: dawidd6/action-send-mail@v4
         with:
@@ -99,9 +105,9 @@ jobs:
           # Optional (recommended) mail server password:
           password: ${{secrets.MAIL_PASSWORD}}
           # Required mail subject:
-          subject: Request for open source code included in "RouterOS v7.19beta5"
+          subject: Request for open source code included in "RouterOS ${{ matrix.version}}"
           # Required recipients' addresses:
-          to: tikoci-repos@gmail.com
+          to: ${{ github.event.inputs.mailto}}
           # Required sender full name (address can be skipped):
           from: TIKOCI GitHub Organization # <user@example.com>
           # Optional plain body:
@@ -116,7 +122,7 @@ jobs:
 
             --TIKOCI Maintainer
           # Optional carbon copy recipients:
-          cc: tikoci-repos@gmail.com
+          cc: tikoci.repos@gmail.com
           # Optional unsigned/invalid certificates allowance:
           ignore_cert: true
           # Optional converting Markdown to HTML (set content_type to text/html too):

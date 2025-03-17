@@ -9,7 +9,7 @@ on:
       mailto:
         description: 'Email To'
         required: true
-        default: "support@mikrotik.com"
+        default: "support@mikrotik.com,mt@mikrotik.com"
   schedule:
     - cron: "0 0 * * *"
 
@@ -68,7 +68,7 @@ jobs:
   sendmail:
     needs: check
     env:
-      mailto: ${{ github.event.inputs.mailto || 'support@mikrotik.com' }}
+      mailto: ${{ github.event.inputs.mailto || 'support@mikrotik.com,mt@mikrotik.com' }}
     permissions:
       contents: write
 
@@ -112,16 +112,17 @@ jobs:
           # Required sender full name (address can be skipped):
           from: TIKOCI GitHub Organization # <user@example.com>
           # Optional plain body:
-          body: |
-            RouterOS v${{ matrix.version }} was found on www.mikrotik.com, which contains the Linux kernel and other source code subject to various open-source licenses that require the code to be publicly available.
+          body: |            
+            RouterOS v${{ matrix.version }} published by MikroTikls SIA ("MikroTik", Ūnijas iela 2, LV-1039, Riga, LATVIA) was found on the www.mikrotik.com domain containing the Linux kernel and other source code subject to various open-source licenses that require the code to be publicly available.
 
-            However, the GNU GPL-licensed source code cannot be found on MikroTik’s website or other online sources.  Based on information posted on forum.mikrotik.com from purported employees of Mikrotik, sources are provided based on an email request.  See https://forum.mikrotik.com/viewtopic.php?t=201561#p1036546.
+            However, the GNU GPL-licensed source code cannot be found on MikroTik's website or other online sources.  Based on information posted on forum.mikrotik.com from purported employees of Mikrotik, sources are provided based on an email request.  See https://forum.mikrotik.com/viewtopic.php?t=201561#p1036546.
 
             Per that direction, please find this email to formally request the GPLv2 and/or GPLv3 licensed source code included in RouterOS, along with any build instructions or other materials as required by the various licenses.   If RouterOS contains other open source code with public disclosure requirements, please consider this request to encompass those sources.
 
             Thank you for your time and attention to this matter. 
 
             --TIKOCI Maintainer
+
           # Optional carbon copy recipients:
           cc: tikoci.repos@gmail.com
           # Optional unsigned/invalid certificates allowance:

@@ -1,7 +1,7 @@
 
 
 
-name: Streamlined Build
+name: Request GPL Source
 
 on:
   workflow_dispatch:
@@ -9,10 +9,9 @@ on:
       mailto:
         description: 'Email To'
         required: true
-        default: "tikoci.repos@gmail.com"
-
-#  schedule:
-#    - cron: "0 0 * * *"
+        default: "support@mikrotik.com"
+  schedule:
+    - cron: "0 0 * * *"
 
 permissions: write-all
 
@@ -68,6 +67,8 @@ jobs:
           echo '${{ fromJSON(steps.needs-versions.outputs.result)[0] != null }}'
   sendmail:
     needs: check
+    env:
+      mailto: ${{ github.event.inputs.mailto || 'support@mikrotik.com' }}
     permissions:
       contents: write
 

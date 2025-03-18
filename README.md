@@ -1,7 +1,7 @@
 # mikrotik-gpl
 
 > [!WARNING]
-> This project is a work in progress.  At time of writing, not GPL source code can be shared by MikroTik after request.
+> This project is a work in progress.  At time of writing, no GPL source code has been shared by MikroTik, after requests.
 
 Mikrotik does not publish GPL source code, specifically the Linux kernel, on its website or other downloadable place.  Instead, it requires a email request to obtain the source code.  So this repo was created to automate the process and provide it for direct download from GitHub when source is provided by Mikrotik.
 

@@ -1,9 +1,14 @@
 # mikrotik-gpl
 
-> [!WARNING]
-> This project is a work in progress.  At time of writing, no GPL source code has been shared by MikroTik, after requests.
+> This project is a work in progress, with goal to help ensure GPL complaince for MikroTik RouterOS.  
 
-Mikrotik does not publish GPL source code, specifically the Linux kernel, on its website or other downloadable place.  Instead, it requires a email request to obtain the source code.  So this repo was created to automate the process and provide it for direct download from GitHub when source is provided by Mikrotik.
+MikroTik does not currently publish GPL source code, specifically the Linux kernel, on its website or other publicly downloadable place.  Instead, it requires a email request to obtain the source code.  So this repo was created to automate the process and provide it for direct download from GitHub when source is provided by Mikrotik.
+
+TIKOCI will continue to advocate for MikroTik providing regular, on-going, per-build disclosure of GPL/other sources, as required under various open source licenses.    
+
+> [!WARNING]
+> At time of writing, the only GPL sources received are dated from 2022, and as response to a request for "RouterOS 7.18.2" GPL source.  No other response has been received to date.  
+> While perhaps possible there have not been changes in GPL source code since 2022, the current disclosure leaves more questions on MikroTik GPL compliance. 
 
 > [!TIP]
 > Source code from RouterOS 6.41rc38 was found on this unrelated GitHub project, from 8 years ago:
@@ -12,13 +17,15 @@ Mikrotik does not publish GPL source code, specifically the Linux kernel, on its
 
 ### Implementation Details
 
-When the GPL/open source code is, eventually, obtained from MikroTik, it will be manually checked into repo.    This project is mainly store those GPL disclousre publicly.  So the only "code" here is a GitHub Action, `gpl-nag-email.yaml`.  The build script checks MikroTik website for the current "stable" and "latest" versions of RouterOS.  If a version is NOT found in GitHub [Releases](https://github.com/tikoci/mikrotik-gpl/releases), the build will email MikroTik to obtain the GPL source.  The build is schedule to check for new releases daily, and will not send emails if a version has already been requested.
+When the GPL/open source code is obtained from MikroTik, it will be manually checked into repo.    This project is mainly _store_ those GPL disclosure publicly.  So the only "code" here is a GitHub Action, `gpl-nag-email.yaml`.  The build script checks MikroTik website for the current "stable" and "latest" versions of RouterOS.  If a version is NOT found in GitHub [Releases](https://github.com/tikoci/mikrotik-gpl/releases), the build will email MikroTik to obtain the GPL source.  The build is schedule to check for new releases daily, and will not send emails if a version has already been requested.
+
+When MikroTik response with source, it provided disclosure will be in Releases.  Additional, the expanded contents will be stored in repo by RouterOS version, or date received if version is unclear.  
 
 ### Potential Uses
 
 > [!NOTE]
 > Significant parts of RouterOS are NOT GPL or other open source code, and would not require disclosure. 
-> RouterOS does use the Linux kernel, so that is main GPL-based code, and will be posted here when obtained from MikroTik.  But the kernel alone is not enough to "rebuild" RouterOS or "add custom packages", as most of Linux "userland" is propritary code and/or may use non-public 3rd party drivers.  So the code here may not be useful, depending on your goals.
+> RouterOS does use the Linux kernel, so that is main GPL-based code, and will be posted here when obtained from MikroTik.  But the kernel alone is not enough to "rebuild" RouterOS or "add custom packages", as most of Linux "userland" is proprietary code and/or may use non-public 3rd party drivers.  So the code here may not be useful, depending on your goals.
 
 GPL and other open source licenses do not require a reason to want disclosure.  
 

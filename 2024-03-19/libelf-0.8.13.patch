@@ -1,0 +1,11 @@
+diff -puNrb libelf-0.8.13/lib/gelf.h libelf/lib/gelf.h
+--- libelf-0.8.13/lib/gelf.h	2013-05-24 13:45:42.000000000 +0300
++++ libelf/lib/gelf.h	2021-12-03 14:02:43.592537166 +0200
+@@ -91,6 +91,7 @@ typedef Elf64_Syminfo GElf_Syminfo;
+ #define GELF_ST_BIND	ELF64_ST_BIND
+ #define GELF_ST_TYPE	ELF64_ST_TYPE
+ #define GELF_ST_INFO	ELF64_ST_INFO
++#define GELF_ST_VISIBILITY(val)         ELF64_ST_VISIBILITY (val)
+ 
+ #define GELF_R_TYPE	ELF64_R_TYPE
+ #define GELF_R_SYM	ELF64_R_SYM

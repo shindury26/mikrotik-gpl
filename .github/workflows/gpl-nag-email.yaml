@@ -92,49 +92,6 @@ jobs:
         run: |
           sudo -E apt update
           sudo -E apt -y install curl
-      - name: Send mail
-        uses: dawidd6/action-send-mail@v4
-        with:
-          # Required mail server address if not connection_url:
-          server_address: smtp.gmail.com
-          # Server port, default 25:
-          server_port: 465
-          # Optional whether this connection use TLS (default is true if server_port is 465)
-          secure: true
-          # Optional (recommended) mail server username:
-          username: ${{secrets.MAIL_USERNAME}}
-          # Optional (recommended) mail server password:
-          password: ${{secrets.MAIL_PASSWORD}}
-          # Required mail subject:
-          subject: Request for open source code included in "RouterOS v${{ matrix.version}}"
-          # Required recipients' addresses:
-          to: ${{ github.event.inputs.mailto}}
-          # Required sender full name (address can be skipped):
-          from: TIKOCI GitHub Organization # <user@example.com>
-          # Optional plain body:
-          body: |            
-            RouterOS v${{ matrix.version }} published by MikroTikls SIA ("MikroTik", Ūnijas iela 2, LV-1039, Riga, LATVIA) was found on the www.mikrotik.com domain containing the Linux kernel and other source code subject to various open-source licenses that require the code to be publicly available.
-
-            However, the GNU GPL-licensed source code cannot be found on MikroTik's website or other online sources.  Based on information posted on forum.mikrotik.com from purported employees of Mikrotik, sources are provided based on an email request.  See https://forum.mikrotik.com/viewtopic.php?t=201561#p1036546.
-
-            Per that direction, please find this email to formally request the GPLv2 and/or GPLv3 licensed source code included in RouterOS, along with any build instructions or other materials as required by the various licenses.   If RouterOS contains other open source code with public disclosure requirements, please consider this request to encompass those sources.
-
-            Thank you for your time and attention to this matter. 
-
-            --TIKOCI Maintainer
-
-          # Optional carbon copy recipients:
-          cc: tikoci.repos@gmail.com
-          # Optional unsigned/invalid certificates allowance:
-          ignore_cert: true
-          # Optional converting Markdown to HTML (set content_type to text/html too):
-          convert_markdown: false
-          # Optional priority: 'high', 'normal' (default) or 'low'
-          priority: high
-          # Optional nodemailerlog: true/false
-          nodemailerlog: true
-          # Optional nodemailerdebug: true/false if true lognodem will also be set true
-          nodemailerdebug: true
 
       - name: Upload Firmware to release
         uses: ncipollo/release-action@v1
